@@ -1,5 +1,4 @@
 from sklearn.metrics import mean_absolute_error, mean_squared_error, root_mean_squared_error
-#from sklearn.linear_model import LinearRegression
 import pandas as pd
 
 def fit_and_eval(X_train, X_test, y_train, y_test, model):
