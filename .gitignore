@@ -208,3 +208,8 @@ __marimo__/
 
 #data
 housing.csv
+tags.csv
+ratings.csv
+movies.csv
+movies_encoded.csv
+links.csv
