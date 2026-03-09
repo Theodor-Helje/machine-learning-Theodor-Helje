@@ -21,12 +21,14 @@ def dummy_encode_movies():
 def tfidf_encode_tags():
     tags = pd.read_csv('Labb-1/ml-latest/tags.csv')
     tags_tfidf = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
-    print(tags_tfidf.head())
 
     tfidf_vectorizer = TfidfVectorizer(max_features=2500, stop_words='english')
-    tag_vectorized_matrix = tfidf_vectorizer.fit_transform(tags_tfidf).toarray()
-    tags_vectorized = pd.DataFrame(tag_vectorized_matrix, columns=tfidf_vectorizer.get_feature_names_out())
-    print(tags_vectorized.head())
+    tag_vectorized_matrix = tfidf_vectorizer.fit_transform(tags_tfidf)
+
+    tags_vectorized = pd.DataFrame.sparse.from_spmatrix(
+        tag_vectorized_matrix, index=tags_tfidf.index, 
+        columns=tfidf_vectorizer.get_feature_names_out()
+    ).fillna(0)
 
     return tags_vectorized
 
@@ -38,8 +40,11 @@ if __name__ == "__main__":
     #movies_encoded.to_csv('Labb-1/ml-latest/movies_encoded.csv')
     #tags_encoded.to_csv('Labb-1/ml-latest/tags_encoded.csv')
 
-
+    movie_features = pd.concat(
+    [movies_encoded.set_index(['movieId']), tags_encoded],
+    axis=1
+)
 
     print(f"dummy encoded movies:\n{movies_encoded}\n")
-    print(f"tfidf encoded tags:\n{tags_encoded.columns}\n")
-    #print(f"movie index mapping dict:\n{get_index_dict()}\n")
+    print(f"tfidf encoded tags:\n{tags_encoded}\n")
+    print(f"combined DataFrame:\n{movie_features}\n")
