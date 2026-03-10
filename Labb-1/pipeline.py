@@ -33,18 +33,27 @@ def tfidf_encode_tags():
     return tags_vectorized
 
 
+def get_movie_features():
+    return pd.concat(
+        [dummy_encode_movies().set_index(['movieId']), tfidf_encode_tags()],
+        axis=1
+        ).fillna(0)
+
+
 if __name__ == "__main__":
+    print('creating movies encoding')
     movies_encoded = dummy_encode_movies()
+
+    print('creating tags tf-idf encoding')
     tags_encoded = tfidf_encode_tags()
 
     #movies_encoded.to_csv('Labb-1/ml-latest/movies_encoded.csv')
     #tags_encoded.to_csv('Labb-1/ml-latest/tags_encoded.csv')
 
-    movie_features = pd.concat(
-    [movies_encoded.set_index(['movieId']), tags_encoded],
-    axis=1
-)
+    print('creating concatenated DataFrame')
+    movie_features = get_movie_features()
 
     print(f"dummy encoded movies:\n{movies_encoded}\n")
     print(f"tfidf encoded tags:\n{tags_encoded}\n")
     print(f"combined DataFrame:\n{movie_features}\n")
+    print(f"combined DataFrame info:\n{movie_features.info()}\n")
