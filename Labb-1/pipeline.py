@@ -22,7 +22,7 @@ def tfidf_encode_tags():
     tags = pd.read_csv('Labb-1/ml-latest/tags.csv')
     tags_tfidf = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
 
-    tfidf_vectorizer = TfidfVectorizer(max_features=2500, stop_words='english')
+    tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
     tag_vectorized_matrix = tfidf_vectorizer.fit_transform(tags_tfidf)
 
     tags_vectorized = pd.DataFrame.sparse.from_spmatrix(
