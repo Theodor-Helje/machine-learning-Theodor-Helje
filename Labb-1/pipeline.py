@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse import coo_matrix
 
 
 def get_index_dict():
@@ -15,7 +16,7 @@ def dummy_encode_movies():
     mlb = MultiLabelBinarizer()
     movies_encoded = movies.join(pd.DataFrame(mlb.fit_transform(movies['genres']), columns=mlb.classes_))
 
-    return movies_encoded
+    return movies_encoded.drop(['genres'], axis='columns')
 
 
 def tfidf_encode_tags():
