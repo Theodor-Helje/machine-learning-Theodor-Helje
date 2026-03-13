@@ -214,3 +214,4 @@ ratings.csv
 movies.csv
 movies_encoded.csv
 links.csv
+interaction_matrix.npz
