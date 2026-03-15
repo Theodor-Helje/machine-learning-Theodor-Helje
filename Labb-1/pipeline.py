@@ -3,6 +3,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix, hstack
 from scipy.sparse import save_npz, load_npz
+import os
 
 
 def get_mapping_dicts(index_as_keys=False):
@@ -15,7 +16,7 @@ def get_mapping_dicts(index_as_keys=False):
         return {id: index for index, id in enumerate(movies['movieId'].unique())}, {id: index for index, id in enumerate(users['userId'].unique())}
 
 
-def dummy_encode_movies():
+def get_encoded_movies():
     movies = pd.read_csv('Labb-1/ml-latest/movies.csv')
     movies['genres'] = movies['genres'].str.split('|')
 
@@ -27,7 +28,7 @@ def dummy_encode_movies():
     return csr_matrix(movies_matrix[movie_sorting])
 
 
-def tfidf_encode_tags():
+def get_tfidf_encoded_tags():
     tags = pd.read_csv('Labb-1/ml-latest/tags.csv')
     tags_grouped = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
     mapping = get_mapping_dicts()[0]
@@ -47,9 +48,9 @@ def tfidf_encode_tags():
     return tags_sparse
 
 
-def get_movie_features():
-    genre_matrix = dummy_encode_movies()
-    tags_matrix = tfidf_encode_tags()
+def get_movie_features_matrix():
+    genre_matrix = get_encoded_movies()
+    tags_matrix = get_tfidf_encoded_tags()
 
     return hstack([genre_matrix, tags_matrix]).tocsr()
 
@@ -69,15 +70,35 @@ def get_user_interaction_matrix():
     return interaction_matrix
 
 
+def validate_files(save_matrices=False):
+    if os.path.exists('Labb-1/ml-latest'):
+        if not os.path.exists('Labb-1/ml-latest/movies.csv'):
+            raise FileNotFoundError("Labb-1/ml-latest/movies.csv not found")
+        elif not os.path.exists('Labb-1/ml-latest/ratings.csv'):
+            raise FileNotFoundError("Labb-1/ml-latest/ratings.csv not found")
+        elif not os.path.exists('Labb-1/ml-latest/tags.csv'):
+            raise FileNotFoundError("Labb-1/ml-latest/tags.csv not found")
+    else:
+        raise FileNotFoundError("Labb-1/ml-latest directory not found")
+    
+    if save_matrices:
+        save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
+        save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix())
+
+
+
 if __name__ == "__main__":
+    print('validating files')
+    validate_files()
+
     print('creating movies encoded matrix')
-    movies_encoded = dummy_encode_movies()
+    movies_encoded = get_encoded_movies()
 
     print('creating tags tf-idf encoded matrix')
-    tags_encoded = tfidf_encode_tags()
+    tags_encoded = get_tfidf_encoded_tags()
 
     print('creating movie features matrix')
-    movie_features = get_movie_features()
+    movie_features = get_movie_features_matrix()
 
     print("creating user interaction matrix")
     interaction_matrix = get_user_interaction_matrix()
