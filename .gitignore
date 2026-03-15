@@ -215,3 +215,4 @@ movies.csv
 movies_encoded.csv
 links.csv
 interaction_matrix.npz
+movie_feature_matrix.npz
