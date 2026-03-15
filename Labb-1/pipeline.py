@@ -49,8 +49,12 @@ def get_movie_features():
     
     movie_features.index = movie_features.index.map(get_mapping_dicts()[0])
     movie_features.index.name = 'movieId_mapped'
+    
+    movie_features = movie_features.sort_index()
 
-    return movie_features
+    movie_features = movie_features.astype(pd.SparseDtype('float', 0))
+
+    return movie_features.sparse.to_coo().to_csr()
 
 
 def get_user_interaction_matrix():
@@ -75,17 +79,19 @@ if __name__ == "__main__":
     print('creating tags tf-idf encoding')
     tags_encoded = tfidf_encode_tags()
 
-    print('creating concatenated DataFrame')
+    print('creating movie features matrix')
     movie_features = get_movie_features()
+
+    print("creating user interaction matrix")
+    interaction_matrix = get_user_interaction_matrix()
 
     print("saving matrices")
     save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
-    #save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
+    save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features())
 
     print(f"dummy encoded movies:\n{movies_encoded}\n")
     print(f"tfidf encoded tags:\n{tags_encoded}\n")
     print(f"combined DataFrame:\n{movie_features}\n")
-    print(f"combined DataFrame info:\n{movie_features.info()}\n")
 
-    print("creating user interaction matrix")
-    print(f"matrix shape: {get_user_interaction_matrix().shape}")
+    print(f"movie features matrix shape:{movie_features.shape}\n")
+    print(f"interaction matrix shape: {interaction_matrix.shape}")
