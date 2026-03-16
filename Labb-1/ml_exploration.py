@@ -37,6 +37,6 @@ if __name__ == "__main__":
     df = pd.read_csv("Labb-1/ml-latest/movies.csv")
 
     user_id = int(input('input user ID to reccomend movies for: '))
-    movie_ids = predict_user_preferences(user_embeddings, movie_embeddings, user_id)
+    movie_ids = predict_user_preferences(user_embeddings, movie_embeddings, user_id, 10)
 
     print(f"\nMovie reccomendations for user {user_id}:\n{df.loc[df['movieId'].isin(movie_ids)].reset_index(drop=True)}\n")
