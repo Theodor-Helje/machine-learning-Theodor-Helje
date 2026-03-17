@@ -40,10 +40,15 @@ def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_
 
 
 if __name__ == "__main__":
-    user_embeddings, movie_embeddings = get_embeddings(user_matrix(load_file=True), movie_matrix(load_file=True), 0.25, 0.75)
+    user_interaction_matrix = user_matrix(load_file=True)
+    user_embeddings, movie_embeddings = get_embeddings(user_interaction_matrix, movie_matrix(load_file=True), 0.6, 0.4)
     df = pd.read_csv("Labb-1/ml-latest/movies.csv")
 
-    user_id = int(input('input user ID to reccomend movies for: '))
-    movie_ids = predict_user_preferences(user_matrix(load_file=True), user_embeddings, movie_embeddings, user_id, 10)
+    while True:
+        user_id = int(input('input user ID to reccomend movies for: '))
+        movie_ids = predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, 10)
 
-    print(f"\nMovie reccomendations for user {user_id}:\n{df.loc[df['movieId'].isin(movie_ids)].reset_index(drop=True)}\n")
+        print(f"\nMovie reccomendations for user {user_id}:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}\n")
+
+        if input('enter to continue\ntype "exit" to close program\n') == 'exit':
+            break
