@@ -40,7 +40,7 @@ def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_
 
 
 if __name__ == "__main__":
-    user_embeddings, movie_embeddings = get_embeddings(user_matrix(load_file=True), movie_matrix(load_file=True))
+    user_embeddings, movie_embeddings = get_embeddings(user_matrix(load_file=True), movie_matrix(load_file=True), 0.25, 0.75)
     df = pd.read_csv("Labb-1/ml-latest/movies.csv")
 
     user_id = int(input('input user ID to reccomend movies for: '))
