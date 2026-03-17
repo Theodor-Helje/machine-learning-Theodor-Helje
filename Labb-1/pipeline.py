@@ -48,14 +48,22 @@ def get_tfidf_encoded_tags():
     return tags_sparse
 
 
-def get_movie_features_matrix():
+def get_movie_features_matrix(load_file=False):
+    if load_file:
+        validate_files()
+        return load_npz('Labb-1/ml-latest/movie_feature_matrix.npz')
+
     genre_matrix = get_encoded_movies()
     tags_matrix = get_tfidf_encoded_tags()
 
     return hstack([genre_matrix, tags_matrix]).tocsr()
 
 
-def get_user_interaction_matrix():
+def get_user_interaction_matrix(load_file=False):
+    if load_file:
+        validate_files()
+        return load_npz('Labb-1/ml-latest/interaction_matrix.npz')
+
     ratings = pd.read_csv('Labb-1/ml-latest/ratings.csv')
     mapping = get_mapping_dicts()
 
@@ -70,20 +78,24 @@ def get_user_interaction_matrix():
     return interaction_matrix
 
 
-def validate_files(save_matrices=False):
+def validate_files(recalculate_matrices=False):
     if os.path.exists('Labb-1/ml-latest'):
         if not os.path.exists('Labb-1/ml-latest/movies.csv'):
             raise FileNotFoundError("Labb-1/ml-latest/movies.csv not found")
+        
         elif not os.path.exists('Labb-1/ml-latest/ratings.csv'):
             raise FileNotFoundError("Labb-1/ml-latest/ratings.csv not found")
+        
         elif not os.path.exists('Labb-1/ml-latest/tags.csv'):
             raise FileNotFoundError("Labb-1/ml-latest/tags.csv not found")
     else:
         raise FileNotFoundError("Labb-1/ml-latest directory not found")
     
-    if save_matrices:
-        save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
-        save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix())
+    if not os.path.exists('Labb-1/ml-latest/interaction_matrix.npz') or recalculate_matrices:
+            save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
+
+    elif not os.path.exists('Labb-1/ml-latest/movie_feature_matrix.npz') or recalculate_matrices:
+            save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix())
 
 
 
