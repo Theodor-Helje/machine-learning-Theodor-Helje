@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD
 from scipy.sparse import load_npz, hstack
 from pipeline import get_mapping_dicts as mapping, get_movie_features_matrix as movie_matrix, get_user_interaction_matrix as user_matrix
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import normalize, StandardScaler
 
 
 def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, k_reccomendations=5):
@@ -41,7 +41,7 @@ def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_
 
 if __name__ == "__main__":
     user_interaction_matrix = user_matrix(load_file=True)
-    user_embeddings, movie_embeddings = get_embeddings(user_interaction_matrix, movie_matrix(load_file=True), 0.6, 0.4)
+    user_embeddings, movie_embeddings = get_embeddings(user_interaction_matrix, movie_matrix(load_file=True), 0.65, 0.35)
     df = pd.read_csv("Labb-1/ml-latest/movies.csv")
 
     while True:

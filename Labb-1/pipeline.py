@@ -33,7 +33,7 @@ def get_tfidf_encoded_tags():
     tags_grouped = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
     mapping = get_mapping_dicts()[0]
 
-    tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+    tfidf_vectorizer = TfidfVectorizer(max_features=7500, stop_words='english')
     tfidf_matrix = tfidf_vectorizer.fit_transform(tags_grouped)
 
     tags_sorting = tags_grouped.index.map(mapping)
