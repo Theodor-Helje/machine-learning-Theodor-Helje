@@ -13,8 +13,7 @@ def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_emb
 
     scores = movie_embeddings @ user_embeddings[user_index]
 
-    interaction_matrix = load_npz("Labb-1/ml-latest/interaction_matrix.npz")
-    user_rated_movies = interaction_matrix[user_index].toarray().flatten()
+    user_rated_movies = user_interaction_matrix[user_index].toarray().flatten()
     scores[np.where(user_rated_movies)] = -np.inf
 
     return [movie_mapping[i] for i in np.argsort(scores)[-k_reccomendations:][::-1]]
