@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.preprocessing import MultiLabelBinarizer, normalize
+from sklearn.preprocessing import MultiLabelBinarizer, normalize, StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix, hstack
 from scipy.sparse import save_npz, load_npz
@@ -72,10 +72,12 @@ def get_user_interaction_matrix(load_file=False):
     ratings['movieId'] = ratings.movieId.map(mapping[0])
     ratings['userId'] = ratings.userId.map(mapping[1])
 
-    ratings['scaled_rating'] = ratings['rating'] / 5 # test scaling
+    #ratings['scaled_rating'] = ratings['rating'] / 5
+    scaler = StandardScaler() #testing
+    ratings['scaled_rating'] = scaler.fit_transform(ratings[['rating']])
 
     interaction_matrix = csr_matrix((
-        ratings['scaled_rating'], #changed to scaled rating
+        ratings['scaled_rating'],
         (ratings['userId'], ratings['movieId'])
     ))
 
@@ -114,7 +116,7 @@ if __name__ == "__main__":
     tags_encoded = get_tfidf_encoded_tags()
 
     print('creating movie features matrix')
-    movie_features = get_movie_features_matrix()
+    movie_features = get_movie_features_matrix(genre_to_tags_ratio=0.5)
 
     print("creating user interaction matrix")
     interaction_matrix = get_user_interaction_matrix()
