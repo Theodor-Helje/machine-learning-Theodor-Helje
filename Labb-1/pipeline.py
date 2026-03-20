@@ -16,7 +16,7 @@ def get_mapping_dicts(index_as_keys=False): # in preprocessing
         return {id: index for index, id in enumerate(movies['movieId'].unique())}, {id: index for index, id in enumerate(users['userId'].unique())}
 
 
-def get_encoded_movies():# in preprocessing
+def get_encoded_movies(): # in preprocessing
     movies = pd.read_csv('Labb-1/ml-latest/movies.csv')
     movies['genres'] = movies['genres'].str.split('|')
 
@@ -28,7 +28,7 @@ def get_encoded_movies():# in preprocessing
     return csr_matrix(movies_matrix[movie_sorting])
 
 
-def get_tfidf_encoded_tags():# in preprocessing
+def get_tfidf_encoded_tags(): # in preprocessing
     tags = pd.read_csv('Labb-1/ml-latest/tags.csv')
     tags_grouped = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
     mapping = get_mapping_dicts()[0]
@@ -58,10 +58,10 @@ def get_movie_features_matrix(load_file=True, genre_to_tags_ratio=0.5): # in pre
 
     features = hstack([genre_matrix, tags_matrix]).tocsr()
 
-    return features.tocsr()# removed normalize
+    return features.tocsr() # removed normalize
 
 
-def get_user_interaction_matrix(load_file=True):
+def get_user_interaction_matrix(load_file=True): # in preprocessing
     if load_file:
         validate_files()
         return load_npz('Labb-1/ml-latest/interaction_matrix.npz')
@@ -72,7 +72,7 @@ def get_user_interaction_matrix(load_file=True):
     ratings['movieId'] = ratings.movieId.map(mapping[0])
     ratings['userId'] = ratings.userId.map(mapping[1])
 
-    scaler = StandardScaler()# testing
+    scaler = StandardScaler() # testing
     ratings['scaled_rating'] = scaler.fit_transform(ratings[['rating']])
 
     interaction_matrix = csr_matrix((
@@ -83,7 +83,7 @@ def get_user_interaction_matrix(load_file=True):
     return interaction_matrix
 
 
-def validate_files(recalculate_matrices=False):
+def validate_files(recalculate_matrices=False): # in data
     if os.path.exists('Labb-1/ml-latest'):
         if not os.path.exists('Labb-1/ml-latest/movies.csv'):
             raise FileNotFoundError("Labb-1/ml-latest/movies.csv not found")
