@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from data import load_file, save_file
 from sklearn.preprocessing import MultiLabelBinarizer, normalize, StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -60,7 +59,7 @@ def get_tfidf_encoded_tags(tags_df=None):
     return tags_sparse
 
 
-def build_movie_features_matrix(encoded_movies, tfidf_encoded_tags, genre_to_tags_ratio=0.5): # changed from load_file to DF input
+def build_movie_features_matrix(encoded_movies, tfidf_encoded_tags, genre_to_tags_ratio=0.5):
     genre_matrix = normalize(encoded_movies) * genre_to_tags_ratio
     tags_matrix = normalize(tfidf_encoded_tags) * (1 - genre_to_tags_ratio)
 
@@ -69,7 +68,7 @@ def build_movie_features_matrix(encoded_movies, tfidf_encoded_tags, genre_to_tag
     return features.tocsr()
 
 
-def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None): # changed from load_file to DF input
+def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None):
     if ratings_df is None:
         ratings_df = load_file(file='ratings')
     if mapping_dicts is None:
