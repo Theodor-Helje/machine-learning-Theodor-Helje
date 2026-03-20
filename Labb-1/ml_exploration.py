@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
-#from scipy.sparse import load_npz, hstack
 from pipeline import get_mapping_dicts as mapping, get_movie_features_matrix as movie_matrix, get_user_interaction_matrix as user_matrix
-from sklearn.preprocessing import normalize#, StandardScaler
+from sklearn.preprocessing import normalize
 
 
 def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, k_reccomendations=5):

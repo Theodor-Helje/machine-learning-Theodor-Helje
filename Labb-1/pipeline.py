@@ -6,7 +6,7 @@ from scipy.sparse import save_npz, load_npz
 import os
 
 
-def get_mapping_dicts(index_as_keys=False):
+def get_mapping_dicts(index_as_keys=False): # in preprocessing
     movies = pd.read_csv('Labb-1/ml-latest/movies.csv').drop_duplicates(subset='movieId').reset_index(drop=True)
     users = pd.read_csv('Labb-1/ml-latest/ratings.csv').drop_duplicates(subset='userId').reset_index(drop=True)
 
@@ -16,7 +16,7 @@ def get_mapping_dicts(index_as_keys=False):
         return {id: index for index, id in enumerate(movies['movieId'].unique())}, {id: index for index, id in enumerate(users['userId'].unique())}
 
 
-def get_encoded_movies():
+def get_encoded_movies():# in preprocessing
     movies = pd.read_csv('Labb-1/ml-latest/movies.csv')
     movies['genres'] = movies['genres'].str.split('|')
 
@@ -28,7 +28,7 @@ def get_encoded_movies():
     return csr_matrix(movies_matrix[movie_sorting])
 
 
-def get_tfidf_encoded_tags():
+def get_tfidf_encoded_tags():# in preprocessing
     tags = pd.read_csv('Labb-1/ml-latest/tags.csv')
     tags_grouped = tags.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
     mapping = get_mapping_dicts()[0]
@@ -48,20 +48,20 @@ def get_tfidf_encoded_tags():
     return tags_sparse
 
 
-def get_movie_features_matrix(load_file=False, genre_to_tags_ratio=0.5):
+def get_movie_features_matrix(load_file=True, genre_to_tags_ratio=0.5): # in preprocessing
     if load_file:
         validate_files()
         return load_npz('Labb-1/ml-latest/movie_feature_matrix.npz')
 
-    genre_matrix = normalize(get_encoded_movies()) * genre_to_tags_ratio # added normalize
-    tags_matrix = normalize(get_tfidf_encoded_tags()) * (1 - genre_to_tags_ratio) # added normalize
+    genre_matrix = normalize(get_encoded_movies()) * genre_to_tags_ratio
+    tags_matrix = normalize(get_tfidf_encoded_tags()) * (1 - genre_to_tags_ratio)
 
     features = hstack([genre_matrix, tags_matrix]).tocsr()
 
-    return features.tocsr() # removed normalize
+    return features.tocsr()# removed normalize
 
 
-def get_user_interaction_matrix(load_file=False):
+def get_user_interaction_matrix(load_file=True):
     if load_file:
         validate_files()
         return load_npz('Labb-1/ml-latest/interaction_matrix.npz')
@@ -72,8 +72,7 @@ def get_user_interaction_matrix(load_file=False):
     ratings['movieId'] = ratings.movieId.map(mapping[0])
     ratings['userId'] = ratings.userId.map(mapping[1])
 
-    #ratings['scaled_rating'] = ratings['rating'] / 5
-    scaler = StandardScaler() #testing
+    scaler = StandardScaler()# testing
     ratings['scaled_rating'] = scaler.fit_transform(ratings[['rating']])
 
     interaction_matrix = csr_matrix((
@@ -98,10 +97,10 @@ def validate_files(recalculate_matrices=False):
         raise FileNotFoundError("Labb-1/ml-latest directory not found")
     
     if not os.path.exists('Labb-1/ml-latest/interaction_matrix.npz') or recalculate_matrices:
-            save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix())
+            save_npz('Labb-1/ml-latest/interaction_matrix.npz', get_user_interaction_matrix(load_file=False))
 
     elif not os.path.exists('Labb-1/ml-latest/movie_feature_matrix.npz') or recalculate_matrices:
-            save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix())
+            save_npz('Labb-1/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix(load_file=False))
 
 
 
