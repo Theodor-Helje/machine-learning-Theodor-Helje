@@ -9,8 +9,8 @@ def load_file(file="movies", path=None):
             "movies": "Labb-1/data-files/ml-latest/movies.csv",
             "ratings": "Labb-1/data-files/ml-latest/ratings.csv",
             "tags": "Labb-1/data-files/ml-latest/tags.csv",
-            "movie_feature_matrix": "Labb-1/data-files/ml-latest/movie_feature_matrix.npz",
-            "interaction_matrix": "Labb-1/data-files/ml-latest/interaction_matrix.npz"
+            "movie_feature_matrix": "Labb-1/data-files/matrices/movie_feature_matrix.npz",
+            "interaction_matrix": "Labb-1/data-files/matrices/interaction_matrix.npz"
         }
         path = default_paths[file]
 
@@ -23,31 +23,13 @@ def load_file(file="movies", path=None):
         raise FileNotFoundError(f"file {path} not found")
 
 
-def save_file(path, file):
-    if path[-1] == "v":
-        file.to_csv(path)
+def save_file(file_name, file):
+    if file_name[-1] == "v":
+        os.makedirs("Labb-1/data-files/csv_files", exist_ok=True)
+        file.to_csv(f"Labb-1/data-files/csv_files/{file_name}")
     else:
-        save_npz(path, file)
-
-
-def validate_files(recalculate_matrices=False): # restructure or remove, currently compleately wrong
-    if os.path.exists('Labb-1/ml-latest'):
-        if not os.path.exists('Labb-1/data-files/ml-latest/movies.csv'):
-            raise FileNotFoundError("Labb-1/data-files/ml-latest/movies.csv not found")
-        
-        elif not os.path.exists('Labb-1/data-files/ml-latest/ratings.csv'):
-            raise FileNotFoundError("Labb-1/data-files/ml-latest/ratings.csv not found")
-        
-        elif not os.path.exists('Labb-1/data-files/ml-latest/tags.csv'):
-            raise FileNotFoundError("Labb-1/data-files/ml-latest/tags.csv not found")
-    else:
-        raise FileNotFoundError("Labb-1/data-files/ml-latest directory not found")
-    
-    if not os.path.exists('Labb-1/data-files/ml-latest/interaction_matrix.npz') or recalculate_matrices:
-            save_npz('Labb-1/data-files/ml-latest/interaction_matrix.npz', get_user_interaction_matrix(load_file=False))
-
-    elif not os.path.exists('Labb-1/data-files/ml-latest/movie_feature_matrix.npz') or recalculate_matrices:
-            save_npz('Labb-1/data-files/ml-latest/movie_feature_matrix.npz', get_movie_features_matrix(load_file=False))
+        os.makedirs("Labb-1/data-files/matrices", exist_ok=True)
+        save_npz(f"Labb-1/data-files/matrices/{file_name}", file)
 
 
 
