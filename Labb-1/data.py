@@ -13,7 +13,9 @@ def get_default_paths():
             "tags": "Labb-1/data-files/ml-latest/tags.csv",
             "movie_feature_matrix": "Labb-1/data-files/matrices/movie_feature_matrix.npz",
             "interaction_matrix": "Labb-1/data-files/matrices/interaction_matrix.npz",
-            "hyperparameters": "Labb-1/hyperparameters.yml"
+            "hyperparameters": "Labb-1/hyperparameters.yml",
+            "user_embeddings": "Labb-1/data-files/matrices/user_embeddings.npy",
+            "movie_embeddings": "Labb-1/data-files/matrices/movie_embeddings.npy"
         }
     return default_paths
 
@@ -30,6 +32,8 @@ def load_file(file="movies", path=None):
             with open(path, 'r') as file:
                 hyperparameters = yaml.safe_load(file)["reccomender"]
             return hyperparameters
+        elif path[-1] == "y":
+            return np.load(path)
         else:
              return load_npz(path)
     else:
@@ -43,8 +47,11 @@ def save_file(file_name, file):
     elif file_name[-1] == "z":
         os.makedirs("Labb-1/data-files/matrices", exist_ok=True)
         save_npz(f"Labb-1/data-files/matrices/{file_name}", file)
+    elif file_name[-1] == "y":
+        os.makedirs("Labb-1/data-files/matrices", exist_ok=True)
+        np.save(f"Labb-1/data-files/matrices/{file_name}", file)
     else:
-        raise ValueError("files must be saved as .npz or .csv format")
+        raise ValueError("files must be saved as .npz, .npy or .csv format")
 
 
 def create_state_df(hyperparameters=None):
@@ -54,7 +61,7 @@ def create_state_df(hyperparameters=None):
     
     paths = get_default_paths()
 
-    storage_space = [os.path.getsize(path) for path in paths.values()]
+    storage_space = [os.path.getsize(path) if os.path.exists(path) else 0 for path in paths.values()]
 
     state = pd.DataFrame(data=[*hyperparameters.values(),
                                *storage_space])
@@ -69,7 +76,7 @@ def compare_state(current_checkpoint=None):
     
     try:
         return np.allclose(current_checkpoint.values, load_file(path="Labb-1/data-files/csv_files/state.csv").values, equal_nan=True)
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError):
         return False
 
 

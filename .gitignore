@@ -217,3 +217,5 @@ links.csv
 interaction_matrix.npz
 movie_feature_matrix.npz
 state.csv
+movie_embeddings.npy
+user_embeddings.npy

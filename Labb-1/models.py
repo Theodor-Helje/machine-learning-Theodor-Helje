@@ -22,7 +22,7 @@ def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_
     return normalize(user_embeddings), normalize(movie_embeddings)
 
 
-def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, mapping_dicts, n_reccomendations=5): # fix
+def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, mapping_dicts, n_reccomendations=5):
     movie_mapping = mapping_dicts[1][0]
     user_mapping = mapping_dicts[0][1]
     user_index = user_mapping[user_id]
@@ -38,7 +38,7 @@ def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_emb
 
 if __name__ == "__main__":
     import preprocessing as pp
-    from data import load_file
+    from data import load_file, save_file
 
     ratings = load_file(file="ratings")
     movies = load_file(file="movies")
@@ -62,3 +62,7 @@ if __name__ == "__main__":
 
         if input('enter to continue\ntype "exit" to close program\n') == 'exit':
             break
+    
+    print("savings embeddings")
+    save_file('user_embeddings.npy', user_embeddings)
+    save_file('movie_embeddings.npy', movie_embeddings)
