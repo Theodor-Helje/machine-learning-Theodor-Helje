@@ -20,7 +20,7 @@ def get_mapping_dicts(movies_df=None, ratings_df=None):
     users = ratings_df.drop_duplicates(subset='userId').reset_index(drop=True)
 
     return [[{id: index for index, id in enumerate(movies['movieId'].unique())}, {id: index for index, id in enumerate(users['userId'].unique())}], # no index as keys
-            [movies['movieId'].to_dict(), users['userId'].to_dict()]] # index as keys
+            [movies['movieId'].to_dict(), users['userId'].to_dict()]] #index as keys
 
 
 def get_encoded_movies(movies_df=None):
@@ -86,6 +86,11 @@ def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None):
     ))
 
     return interaction_matrix
+
+
+def search_movie_index(movie_title, movies_df=None):
+    if movies_df is None:
+        movies_df = load_file(file="movies")
 
 
 

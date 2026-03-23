@@ -71,7 +71,7 @@ def predict_user_reccomendations(user_id, user_interaction_matrix=None, user_emb
 
 
 def predict_movie_reccomendations(): #input movie title, output df of top n reccomendations
-    pass
+    """return a DataFrame with the top n reccomendations for a given movie title"""
 
 
 
@@ -90,7 +90,8 @@ if __name__ == "__main__":
             user_interaction_matrix=user_interaction_matrix, 
             user_embeddings=user_embeddings, 
             movie_embeddings=movie_embeddings,
-            mapping_dicts=mapping
+            mapping_dicts=mapping,
+            n_reccomendations=10
             )}\n")
 
         if input('enter to continue\ntype "exit" to close program\n') == 'exit':

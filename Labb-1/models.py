@@ -83,3 +83,6 @@ if __name__ == "__main__":
 
     movie_ids = reccomend_similar_movies(movie_embeddings, 858, mapping, 10)
     print(f"reccomendations for the godfather:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
+
+    movie_ids = reccomend_similar_movies(movie_embeddings, 6241, mapping, 10)
+    print(f"reccomendations for pauline at the beach:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
