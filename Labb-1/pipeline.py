@@ -70,6 +70,10 @@ def predict_user_reccomendations(user_id, user_interaction_matrix=None, user_emb
     return movies.loc[movies['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]
 
 
+def predict_movie_reccomendations(): #input movie title, output df of top n reccomendations
+    pass
+
+
 
 if __name__ == "__main__":
     print("verifying files and setting up model")
