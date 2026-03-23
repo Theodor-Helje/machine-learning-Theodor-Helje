@@ -35,6 +35,20 @@ def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_emb
     return [movie_mapping[i] for i in np.argsort(scores)[-n_reccomendations:][::-1]]
 
 
+def reccomend_similar_movies(movie_embeddings, movie_id, mapping_dicts, n_reccomendations=5):
+    matrix_to_movie_mapping = mapping_dicts[1][0]
+    movie_to_matrix_mapping = mapping_dicts[0][0]
+    movie_index = movie_to_matrix_mapping[movie_id]
+
+    movie_vector_embedding = movie_embeddings[movie_index]
+
+    scores = movie_embeddings @ movie_vector_embedding
+
+    scores[movie_index] = -np.inf
+
+    return [matrix_to_movie_mapping[i] for i in np.argsort(scores)[-n_reccomendations:][::-1]]
+
+
 
 if __name__ == "__main__":
     import preprocessing as pp
@@ -66,3 +80,6 @@ if __name__ == "__main__":
     print("saving embeddings")
     save_file('user_embeddings.npy', user_embeddings)
     save_file('movie_embeddings.npy', movie_embeddings)
+
+    movie_ids = reccomend_similar_movies(movie_embeddings, 858, mapping, 10)
+    print(f"reccomendations for the godfather:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
