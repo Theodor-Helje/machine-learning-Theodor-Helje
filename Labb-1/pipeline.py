@@ -5,6 +5,7 @@ import models
 
 
 def model_setup(): #validate and set up matrices and hyperparameters
+    """veryfies saved data and recalculates if needed"""
     hyperparameters = data.load_file(file='hyperparameters')
     current_state = data.create_state_df(hyperparameters)
     same_state = data.compare_state(current_state)
