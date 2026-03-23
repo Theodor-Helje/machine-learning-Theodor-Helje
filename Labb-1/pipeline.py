@@ -10,9 +10,6 @@ def model_setup(): #validate and set up matrices and hyperparameters
     same_state = data.compare_state(current_state)
 
     if not same_state:
-        data.save_file("state.csv", current_state)
-        del current_state
-        
         mapping = pp.get_mapping_dicts()
 
         movies_encoded = pp.get_encoded_movies(data.load_file(file="movies"))
@@ -36,6 +33,7 @@ def model_setup(): #validate and set up matrices and hyperparameters
 
         data.save_file('user_embeddings.npy', user_embeddings)
         data.save_file('movie_embeddings.npy', movie_embeddings)
+        data.save_file("state.csv", data.create_state_df(hyperparameters))
 
         return user_embeddings, movie_embeddings
 
