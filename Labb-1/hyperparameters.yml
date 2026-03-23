@@ -1,5 +1,5 @@
 reccomender:
-  genre_to_tags_ratio: 0.35
-  collaborative_to_content_ratio: 0.75
+  genre_to_tags_ratio: 0.45
+  collaborative_to_content_ratio: 0.65
   tfidf_max_features: 7500
   svd_n_components: 128
