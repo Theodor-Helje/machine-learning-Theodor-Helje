@@ -63,6 +63,6 @@ if __name__ == "__main__":
         if input('enter to continue\ntype "exit" to close program\n') == 'exit':
             break
     
-    print("savings embeddings")
+    print("saving embeddings")
     save_file('user_embeddings.npy', user_embeddings)
     save_file('movie_embeddings.npy', movie_embeddings)
