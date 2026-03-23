@@ -4,12 +4,12 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import normalize
 
 
-def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_to_content_ratio=0.5):
-    collaborative_svd = TruncatedSVD(n_components=128)
+def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_to_content_ratio=0.5, svd_n_components=128):
+    collaborative_svd = TruncatedSVD(n_components=svd_n_components)
     collaborative_svd.fit_transform(user_interaction_matrix)
     movie_coll_embeddings = collaborative_svd.components_.T
 
-    content_svd = TruncatedSVD(n_components=128)
+    content_svd = TruncatedSVD(n_components=svd_n_components)
     movie_content_embeddings = content_svd.fit_transform(movie_feature_matrix)
 
     movie_embeddings = np.hstack([

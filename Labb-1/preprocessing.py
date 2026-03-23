@@ -37,14 +37,14 @@ def get_encoded_movies(movies_df=None):
     return csr_matrix(movies_matrix[movie_sorting])
 
 
-def get_tfidf_encoded_tags(tags_df=None):
+def get_tfidf_encoded_tags(tags_df=None, tfidf_max_features=128):
     if tags_df is None:
         tags_df = load_file(file='tags')
 
     tags_grouped = tags_df.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
     mapping = get_mapping_dicts()[0][0]
 
-    tfidf_vectorizer = TfidfVectorizer(max_features=7500, stop_words='english')
+    tfidf_vectorizer = TfidfVectorizer(max_features=tfidf_max_features, stop_words='english')
     tfidf_matrix = tfidf_vectorizer.fit_transform(tags_grouped)
 
     tags_sorting = tags_grouped.index.map(mapping)
