@@ -76,10 +76,6 @@ if __name__ == "__main__":
 
         if input('enter to continue\ntype "exit" to close program\n') == 'exit':
             break
-    
-    print("saving embeddings")
-    save_file('user_embeddings.npy', user_embeddings)
-    save_file('movie_embeddings.npy', movie_embeddings)
 
     movie_ids = reccomend_similar_movies(movie_embeddings, 858, mapping, 10)
     print(f"reccomendations for the godfather:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")

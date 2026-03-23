@@ -88,9 +88,12 @@ def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None):
     return interaction_matrix
 
 
-def search_movie_index(movie_title, movies_df=None):
+def search_movie_index(movie_title, movies_df=None): #add function
+    """searches for a movie by title and returns the corresponding movieId"""
     if movies_df is None:
         movies_df = load_file(file="movies")
+    
+    movies_df.loc[movies_df['title'].apply(lambda x: x.lower().split()[:len(movie_title.split())] == movie_title.lower().split()), 'movieId']
 
 
 
@@ -106,10 +109,6 @@ if __name__ == "__main__":
 
     print("creating user interaction matrix")
     interaction_matrix = build_user_interaction_matrix(load_file(file="ratings"), get_mapping_dicts())
-
-    print("saving matrices\n")
-    save_file('interaction_matrix.npz', interaction_matrix)
-    save_file('movie_feature_matrix.npz', movie_features)
 
     print(f"dummy encoded movies matrix shape: {movies_encoded.shape}\n")
     print(f"tfidf encoded tags matrix shape: {tags_encoded.shape}\n")
