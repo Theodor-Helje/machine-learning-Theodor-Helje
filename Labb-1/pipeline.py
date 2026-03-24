@@ -56,7 +56,7 @@ def predict_user_reccomendations(user_id, user_interaction_matrix=None, user_emb
     if mapping_dicts is None:
         mapping_dicts = pp.get_mapping_dicts()
 
-    movie_ids = models.predict_user_preferences(
+    reccomendation_ids = models.predict_user_preferences(
         user_interaction_matrix, 
         user_embeddings, 
         movie_embeddings, 
@@ -67,11 +67,27 @@ def predict_user_reccomendations(user_id, user_interaction_matrix=None, user_emb
 
     movies = data.load_file(file="movies")
 
-    return movies.loc[movies['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]
+    return movies.loc[movies['movieId'].isin(reccomendation_ids)].set_index('movieId', drop=True)[['title', 'genres']]
 
 
-def predict_movie_reccomendations(): #input movie title, output df of top n reccomendations
-    """return a DataFrame with the top n reccomendations for a given movie title"""
+def predict_movie_reccomendations(movie_title, movie_embeddings=None, mapping_dicts=None, movie_index=None, n_reccomendations=5):
+    """return a DataFrame with the top n reccomendations for a given movie title, returns None if movie_title isnt found in the data"""
+    if movie_embeddings is None:
+        movie_embeddings = data.load_file(file="movie_embeddings")
+
+    if mapping_dicts is None:
+        mapping_dicts = pp.get_mapping_dicts()
+
+    movie_index = pp.search_movie_index(movie_title)
+
+    if movie_index is None:
+        return None
+
+    reccomendation_ids = models.reccomend_similar_movies(movie_embeddings, movie_index, mapping_dicts, n_reccomendations)
+
+    movies = data.load_file(file="movies")
+
+    return movies.loc[movies['movieId'].isin(reccomendation_ids)].set_index('movieId', drop=True)[['title', 'genres']]
 
 
 

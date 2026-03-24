@@ -36,6 +36,7 @@ def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_emb
 
 
 def reccomend_similar_movies(movie_embeddings, movie_id, mapping_dicts, n_reccomendations=5):
+    "returns movie ids of the top n reccomended movies based on the given movie id"
     matrix_to_movie_mapping = mapping_dicts[1][0]
     movie_to_matrix_mapping = mapping_dicts[0][0]
     movie_index = movie_to_matrix_mapping[movie_id]
