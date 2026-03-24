@@ -51,7 +51,7 @@ def run_user_reccomender(n_reccomendations):
             user_embeddings=user_embeddings, 
             movie_embeddings=movie_embeddings,
             mapping_dicts=mapping,
-            n_reccomendations=10
+            n_reccomendations=n_reccomendations
             )}\n")
 
 
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     print("running movie reccomender:")
     run_movie_reccomender(10)
 
-    print("\n\n\n\nrunning user reccomender:")
+    print("\n\n\n\n\nrunning user reccomender:")
     run_user_reccomender(10)
