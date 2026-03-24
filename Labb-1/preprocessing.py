@@ -89,11 +89,21 @@ def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None):
 
 
 def search_movie_index(movie_title, movies_df=None): #add function
-    """searches for a movie by title and returns the corresponding movieId"""
+    """searches for a movie by title and returns the corresponding movieId, returns None if movie isnt found"""
     if movies_df is None:
         movies_df = load_file(file="movies")
     
-    movies_df.loc[movies_df['title'].apply(lambda x: x.lower().split()[:len(movie_title.split())] == movie_title.lower().split()), 'movieId']
+    if movie_title.lower().startswith("the "):
+        movie_normalized_title = movie_title[4:] + ", the"
+    else:
+        movie_normalized_title = movie_title
+    
+    try:
+        return movies_df.loc[movies_df['title'].apply(
+            lambda x: x.lower()[:-6].split() == movie_normalized_title.lower().split())
+            , 'movieId'].iloc[0]
+    except IndexError:
+        return None
 
 
 
@@ -114,3 +124,8 @@ if __name__ == "__main__":
     print(f"tfidf encoded tags matrix shape: {tags_encoded.shape}\n")
     print(f"movie features matrix shape: {movie_features.shape}\n")
     print(f"interaction matrix shape: {interaction_matrix.shape}\n")
+
+    print(f"search for index of 'toy story': {search_movie_index("toy story")}, true id: 1")
+    print(f"search for index of 'goldeneye': {search_movie_index("goldeneye")}, true id: 10")
+    print(f"search for index of 'the american president': {search_movie_index("the american president")}, true id: 11")
+    print(f"search for non-existant movie title: {search_movie_index("swdgb9wegwd")}")
