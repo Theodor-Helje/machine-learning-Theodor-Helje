@@ -42,10 +42,8 @@ def run_user_reccomender(n_reccomendations):
 
         try:
             user_id = int(user_id)
-        except ValueError:
-            print("user id must convertable to int")
 
-        print(f"\nMovie reccomendations for user {user_id}:\n{pipeline.predict_user_reccomendations(
+            print(f"\nMovie reccomendations for user {user_id}:\n{pipeline.predict_user_reccomendations(
             user_id=user_id, 
             user_interaction_matrix=user_interaction_matrix, 
             user_embeddings=user_embeddings, 
@@ -53,6 +51,9 @@ def run_user_reccomender(n_reccomendations):
             mapping_dicts=mapping,
             n_reccomendations=n_reccomendations
             )}\n")
+
+        except ValueError:
+            print("user id must convertable to int")
 
 
 
