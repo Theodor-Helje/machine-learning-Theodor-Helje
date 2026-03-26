@@ -27,6 +27,8 @@ This allows the system to recommend movies based on both content similarity and 
 
 ## ⚙️ Implementation
 
+**This project was created in python 3.13.7**
+
 The implementation follows these steps:
 
 1. Read the instructions in the `README.md` inside the `data-files` directory and download the dataset
