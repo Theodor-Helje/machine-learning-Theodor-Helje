@@ -5,6 +5,7 @@ from sklearn.preprocessing import normalize
 
 
 def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_to_content_ratio=0.5, svd_n_components=128):
+    """returns normalized embeddings for users and movies"""
     collaborative_svd = TruncatedSVD(n_components=svd_n_components)
     collaborative_svd.fit_transform(user_interaction_matrix)
     movie_coll_embeddings = collaborative_svd.components_.T
@@ -23,6 +24,7 @@ def get_embeddings(user_interaction_matrix, movie_feature_matrix, collaborative_
 
 
 def predict_user_preferences(user_interaction_matrix, user_embeddings, movie_embeddings, user_id, mapping_dicts, n_reccomendations=5):
+    "returns movie ids of the top n reccomended movies based on the given user id"
     movie_mapping = mapping_dicts[1][0]
     user_mapping = mapping_dicts[0][1]
     user_index = user_mapping[user_id]

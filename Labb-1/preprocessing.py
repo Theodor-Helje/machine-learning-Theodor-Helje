@@ -6,7 +6,8 @@ from scipy.sparse import csr_matrix, hstack
 
 
 def get_mapping_dicts(movies_df=None, ratings_df=None):
-    """mapping[0][] = data set Id as keys\n
+    """returns dicts for mapping user ids and movie ids\n
+    mapping[0][] = data set Id as keys\n
     mapping[1][] = matrix index as keys\n
     mapping[][0] = movies\n
     mapping[][1] = users\n"""
@@ -23,28 +24,36 @@ def get_mapping_dicts(movies_df=None, ratings_df=None):
             [movies['movieId'].to_dict(), users['userId'].to_dict()]] #index as keys
 
 
-def get_encoded_movies(movies_df=None):
+def get_encoded_movies(movies_df=None, mapping_dict=None):
+    """returns a csr matrix of one-hot encoded movies"""
     if movies_df is None:
         movies_df = load_file(file='movies')
+    
+    if mapping_dict is None:
+        mapping_dict = get_mapping_dicts()
 
     movies_df['genres'] = movies_df['genres'].str.split('|')
 
     mlb = MultiLabelBinarizer()
     movies_matrix = mlb.fit_transform(movies_df['genres'])
 
-    movie_sorting = movies_df['movieId'].map(get_mapping_dicts()[0][0]).argsort()
+    movie_sorting = movies_df['movieId'].map(mapping_dict[0][0]).argsort()
 
     return csr_matrix(movies_matrix[movie_sorting])
 
 
-def get_tfidf_encoded_tags(tags_df=None, tfidf_max_features=128):
+def get_tfidf_encoded_tags(tags_df=None, mapping_dict=None, tfidf_max_features=128):
+    """returns a csr matrix of TF-IDF encoded tags"""
     if tags_df is None:
         tags_df = load_file(file='tags')
+    
+    if mapping_dict is None:
+        mapping_dict = get_mapping_dicts()
 
     tags_grouped = tags_df.dropna(axis=0).groupby('movieId')['tag'].apply(lambda x: ' '.join(x).lower())
-    mapping = get_mapping_dicts()[0][0]
+    mapping = mapping_dict()[0][0]
 
-    tfidf_vectorizer = TfidfVectorizer(max_features=tfidf_max_features, stop_words='english', min_df=2, ngram_range=(1,2)) #added mindf and ngram, test
+    tfidf_vectorizer = TfidfVectorizer(max_features=tfidf_max_features, stop_words='english', min_df=2, ngram_range=(1,2))
     tfidf_matrix = tfidf_vectorizer.fit_transform(tags_grouped)
 
     tags_sorting = tags_grouped.index.map(mapping)
@@ -60,6 +69,7 @@ def get_tfidf_encoded_tags(tags_df=None, tfidf_max_features=128):
 
 
 def build_movie_features_matrix(encoded_movies, tfidf_encoded_tags, genre_to_tags_ratio=0.5):
+    """returns a csr matrix of shape (n_movies, m_features) containing movies and their respective features"""
     genre_matrix = normalize(encoded_movies) * genre_to_tags_ratio
     tags_matrix = normalize(tfidf_encoded_tags) * (1 - genre_to_tags_ratio)
 
@@ -69,10 +79,11 @@ def build_movie_features_matrix(encoded_movies, tfidf_encoded_tags, genre_to_tag
 
 
 def build_user_interaction_matrix(ratings_df=None, mapping_dicts=None):
+    """returns a csr matrix of shape (n_users, m_movies) containing standardized ratings"""
     if ratings_df is None:
         ratings_df = load_file(file='ratings')
     if mapping_dicts is None:
-        mapping_dicts = get_mapping_dicts()[0]
+        mapping_dicts = get_mapping_dicts()
 
     ratings_df['movieId'] = ratings_df.movieId.map(mapping_dicts[0][0])
     ratings_df['userId'] = ratings_df.userId.map(mapping_dicts[0][1])

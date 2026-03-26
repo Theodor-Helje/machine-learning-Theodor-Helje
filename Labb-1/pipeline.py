@@ -4,7 +4,7 @@ import preprocessing as pp
 import models
 
 
-def model_setup(): #validate and set up matrices and hyperparameters
+def model_setup():
     """verifies saved data and recalculates if needed"""
     hyperparameters = data.load_file(file='hyperparameters')
     current_state = data.create_state_df(hyperparameters)

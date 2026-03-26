@@ -7,6 +7,7 @@ import numpy as np
 
 
 def get_default_paths():
+    """returns dict used in load_file()"""
     default_paths = {
             "movies": "Labb-1/data-files/ml-latest/movies.csv",
             "ratings": "Labb-1/data-files/ml-latest/ratings.csv",
@@ -21,6 +22,7 @@ def get_default_paths():
 
 
 def load_file(file="movies", path=None):
+    """loads a file, either by name as key for default_paths dict or as entire path"""
     if path is None:
         default_paths = get_default_paths()
         path = default_paths[file]
@@ -41,6 +43,7 @@ def load_file(file="movies", path=None):
 
 
 def save_file(file_name, file):
+    """saved data files in their correct directory as the correct type"""
     if file_name[-1] == "v":
         os.makedirs("Labb-1/data-files/csv_files", exist_ok=True)
         file.to_csv(f"Labb-1/data-files/csv_files/{file_name}", index=False)

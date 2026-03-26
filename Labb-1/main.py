@@ -4,6 +4,7 @@ from preprocessing import get_mapping_dicts
 
 
 def run_movie_reccomender(n_reccomendations):
+    """runs terminal-based movie reccomender (based on movies)"""
     print("verifying files and setting up model")
     _, movie_embeddings = pipeline.model_setup()
 
@@ -26,6 +27,7 @@ def run_movie_reccomender(n_reccomendations):
 
 
 def run_user_reccomender(n_reccomendations):
+    """runs terminal-based movie reccomender (based on users)"""
     print("verifying files and setting up model")
     user_embeddings, movie_embeddings = pipeline.model_setup()
 
