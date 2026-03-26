@@ -13,8 +13,8 @@ def model_setup():
     if not same_state:
         mapping = pp.get_mapping_dicts()
 
-        movies_encoded = pp.get_encoded_movies(data.load_file(file="movies"))
-        tags_encoded = pp.get_tfidf_encoded_tags(data.load_file(file="tags"), hyperparameters['tfidf_max_features'])
+        movies_encoded = pp.get_encoded_movies(data.load_file(file="movies"), mapping)
+        tags_encoded = pp.get_tfidf_encoded_tags(data.load_file(file="tags"), mapping, hyperparameters['tfidf_max_features'])
 
         movie_features = pp.build_movie_features_matrix(movies_encoded, tags_encoded, genre_to_tags_ratio=hyperparameters['genre_to_tags_ratio'])
         interaction_matrix = pp.build_user_interaction_matrix(data.load_file(file="ratings"), mapping)
