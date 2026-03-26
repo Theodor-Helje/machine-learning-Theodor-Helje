@@ -4,19 +4,22 @@ import yaml
 from scipy.sparse import save_npz, load_npz
 from scipy.sparse import csr_matrix
 import numpy as np
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent
 
 
 def get_default_paths():
     """returns dict used in load_file()"""
     default_paths = {
-            "movies": "Labb-1/data-files/ml-latest/movies.csv",
-            "ratings": "Labb-1/data-files/ml-latest/ratings.csv",
-            "tags": "Labb-1/data-files/ml-latest/tags.csv",
-            "movie_feature_matrix": "Labb-1/data-files/matrices/movie_feature_matrix.npz",
-            "interaction_matrix": "Labb-1/data-files/matrices/interaction_matrix.npz",
-            "hyperparameters": "Labb-1/hyperparameters.yml",
-            "user_embeddings": "Labb-1/data-files/matrices/user_embeddings.npy",
-            "movie_embeddings": "Labb-1/data-files/matrices/movie_embeddings.npy"
+            "movies": BASE / "data-files/ml-latest/movies.csv",
+            "ratings": BASE / "data-files/ml-latest/ratings.csv",
+            "tags": BASE / "data-files/ml-latest/tags.csv",
+            "movie_feature_matrix": BASE / "data-files/matrices/movie_feature_matrix.npz",
+            "interaction_matrix": BASE / "data-files/matrices/interaction_matrix.npz",
+            "hyperparameters": BASE / "hyperparameters.yml",
+            "user_embeddings": BASE / "data-files/matrices/user_embeddings.npy",
+            "movie_embeddings": BASE / "data-files/matrices/movie_embeddings.npy"
         }
     return default_paths
 
@@ -24,17 +27,19 @@ def get_default_paths():
 def load_file(file="movies", path=None):
     """loads a file, either by name as key for default_paths dict or as entire path"""
     if path is None:
-        default_paths = get_default_paths()
-        path = default_paths[file]
+        path = get_default_paths()[file]
+    path = Path(path)
 
-    if os.path.exists(path):
-        if path[-1] == "v":
+    suffix = path.suffix.lower()
+
+    if path.exists():
+        if suffix == ".csv":
             return pd.read_csv(path)
-        elif path[-1] == "l":
+        elif suffix == ".yml":
             with open(path, 'r') as file:
                 hyperparameters = yaml.safe_load(file)["reccomender"]
             return hyperparameters
-        elif path[-1] == "y":
+        elif suffix == ".npy":
             return np.load(path)
         else:
              return load_npz(path)
@@ -45,14 +50,14 @@ def load_file(file="movies", path=None):
 def save_file(file_name, file):
     """saved data files in their correct directory as the correct type"""
     if file_name[-1] == "v":
-        os.makedirs("Labb-1/data-files/csv_files", exist_ok=True)
-        file.to_csv(f"Labb-1/data-files/csv_files/{file_name}", index=False)
+        (BASE / "data-files/csv_files").mkdir(parents=True, exist_ok=True)
+        file.to_csv(BASE / f"data-files/csv_files/{file_name}", index=False)
     elif file_name[-1] == "z":
-        os.makedirs("Labb-1/data-files/matrices", exist_ok=True)
-        save_npz(f"Labb-1/data-files/matrices/{file_name}", file)
+        (BASE / "data-files/matrices").mkdir(parents=True, exist_ok=True)
+        save_npz(BASE / f"data-files/matrices/{file_name}", file)
     elif file_name[-1] == "y":
-        os.makedirs("Labb-1/data-files/matrices", exist_ok=True)
-        np.save(f"Labb-1/data-files/matrices/{file_name}", file)
+        (BASE / "data-files/matrices").mkdir(parents=True, exist_ok=True)
+        np.save(BASE / f"data-files/matrices/{file_name}", file)
     else:
         raise ValueError("files must be saved as .npz, .npy or .csv format")
 
@@ -78,7 +83,7 @@ def compare_state(current_checkpoint=None):
         current_checkpoint = create_state_df()
     
     try:
-        return np.allclose(current_checkpoint.values, load_file(path="Labb-1/data-files/csv_files/state.csv").values, equal_nan=True)
+        return np.allclose(current_checkpoint.values, load_file(path=BASE / "data-files/csv_files/state.csv").values, equal_nan=True)
     except (FileNotFoundError, ValueError):
         return False
 
