@@ -55,7 +55,7 @@ def reccomend_similar_movies(movie_embeddings, movie_id, mapping_dicts, n_reccom
 
 if __name__ == "__main__":
     import preprocessing as pp
-    from data import load_file, save_file
+    from data import load_file
 
     ratings = load_file(file="ratings")
     movies = load_file(file="movies")
@@ -81,7 +81,7 @@ if __name__ == "__main__":
             break
 
     movie_ids = reccomend_similar_movies(movie_embeddings, 858, mapping, 10)
-    print(f"reccomendations for the godfather:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
+    print(f"\nreccomendations for the godfather:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
 
     movie_ids = reccomend_similar_movies(movie_embeddings, 6241, mapping, 10)
-    print(f"reccomendations for pauline at the beach:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
+    print(f"\nreccomendations for pauline at the beach:\n{df.loc[df['movieId'].isin(movie_ids)].set_index('movieId', drop=True)[['title', 'genres']]}")
