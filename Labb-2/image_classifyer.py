@@ -88,7 +88,7 @@ class ResnetVisualizer():
 
     def fit_visualize_image(self, img_path, top_k=1, layer=None):
         self.fit_image(img_path, top_k, layer)
-        self.visualize_prediction()
+        self.visualize_prediction(only_top_1=True if top_k == 1 else False)
 
 
 
