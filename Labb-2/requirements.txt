@@ -20,5 +20,6 @@ six==1.17.0
 sympy==1.14.0
 torch==2.11.0
 torchcam==0.4.1
+torchvision==0.26.0
 typing-extensions==4.15.0
 tzdata==2026.1
